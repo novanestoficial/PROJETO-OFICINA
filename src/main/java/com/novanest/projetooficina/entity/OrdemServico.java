@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -43,11 +44,13 @@ public class OrdemServico {
     @Column(length = 500)
     private String descricaoProblema;
 
-    private Double valorMaoDeObra;
+    private BigDecimal valorMaoDeObra;
+    private BigDecimal valorPecas;
+    private BigDecimal desconto;
+    private BigDecimal valorTotal;
 
-    private Double valorPecas;
-
-    private Double desconto;
-
-    private Double valorTotal;
+    @PrePersist
+    public void prePersist() {
+        this.dataAbertura = LocalDate.now();
+    }
 }

@@ -3,6 +3,7 @@ package com.novanest.projetooficina.service;
 import com.novanest.projetooficina.entity.Cliente;
 import com.novanest.projetooficina.exception.ClienteNaoEncontradoException;
 import com.novanest.projetooficina.repository.ClienteRepository;
+import com.novanest.projetooficina.validate.ClienteValidate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +15,29 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ClienteService {
 
-    private final ClienteRepository clienteRepository;
+        private final ClienteRepository clienteRepository;
+        private final ClienteValidate clienteValidate;
 
     // =========================
     // CRIAR CLIENTE
     // =========================
+
     public Cliente criarCliente(Cliente cliente) {
 
-        validarCliente(cliente);
+        clienteValidate.validarCliente(cliente);
+
+        if (clienteRepository.existsByEmail(cliente.getEmail())) {
+            throw new IllegalArgumentException("Email já cadastrado");
+        }
+
+        if (cliente.getCpf() != null &&
+                clienteRepository.existsByCpf(cliente.getCpf())) {
+            throw new IllegalArgumentException("CPF já cadastrado");
+        }
+
+        if (cliente.getCnpj() != null && clienteRepository.existsByCnpj(cliente.getCnpj())) {
+            throw new IllegalArgumentException("CNPJ já cadastrado");
+        }
 
         return clienteRepository.save(cliente);
     }
@@ -109,35 +125,5 @@ public class ClienteService {
     public void deletarCliente(UUID id) {
         Cliente cliente = buscarPorId(id);
         clienteRepository.delete(cliente);
-    }
-
-    // =========================
-    // VALIDAÇÕES
-    // =========================
-    private void validarCliente(Cliente cliente) {
-
-        if (cliente.getNome() == null || cliente.getNome().length() < 5) {
-            throw new IllegalArgumentException("Nome inválido");
-        }
-
-        if (cliente.getEmail() == null || cliente.getEmail().isBlank()) {
-            throw new IllegalArgumentException("Email obrigatório");
-        }
-
-        if (clienteRepository.existsByEmail(cliente.getEmail())) {
-            throw new IllegalArgumentException("Email já cadastrado");
-        }
-
-        if (cliente.getCpf() != null && !cliente.getCpf().isBlank()) {
-            if (clienteRepository.existsByCpf(cliente.getCpf())) {
-                throw new IllegalArgumentException("CPF já cadastrado");
-            }
-        }
-
-        if (cliente.getCnpj() != null && !cliente.getCnpj().isBlank()) {
-            if (clienteRepository.existsByCnpj(cliente.getCnpj())) {
-                throw new IllegalArgumentException("CNPJ já cadastrado");
-            }
-        }
     }
 }

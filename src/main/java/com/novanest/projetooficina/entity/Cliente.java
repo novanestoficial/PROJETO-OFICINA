@@ -1,5 +1,6 @@
 package com.novanest.projetooficina.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.novanest.projetooficina.enums.TipoCliente;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -39,12 +40,10 @@ public class Cliente {
     private TipoCliente tipoCliente;
 
     // CPF DO CLIENTE
-    @CPF
     @Column(unique = true, length = 11)
     private String cpf;
 
     //CNPJ DO CLIENTE
-    @CNPJ
     @Column(unique = true, length = 14)
     private String cnpj;
 
@@ -65,7 +64,7 @@ public class Cliente {
     private String endereco;
 
     // DATA DE CADASTRO DO CLIENTE
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDate dataCadastro;
 
     // DATA DE NASCIMENTO DO CLIENTE
@@ -88,7 +87,9 @@ public class Cliente {
     @Column(length = 2)
     private String estado;
 
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
+    // VEICULOS
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Veiculo> veiculos;
 
     @PrePersist

@@ -10,10 +10,5 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/veiculos")
 public class VeiculoController {
 
-    @PostMapping
-    public Veiculo criarVeiculo(@RequestBody Veiculo veiculo) {
-
-    }
-
 
 }

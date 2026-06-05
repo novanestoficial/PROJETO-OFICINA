@@ -5,8 +5,17 @@ import com.novanest.projetooficina.entity.Veiculo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface VeiculoRepository extends JpaRepository<Veiculo, UUID> {
+
+    List<Veiculo> findByCliente_id(UUID cliente_id);
+
+    Optional<Veiculo> findByPlaca(String placa);
+
+    boolean existsByPlaca(String placa);
+
 }

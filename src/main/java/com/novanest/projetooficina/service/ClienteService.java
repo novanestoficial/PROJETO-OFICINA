@@ -36,7 +36,7 @@ public class ClienteService {
     // =========================
     public Cliente buscarPorId(UUID id) {
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+                .orElseThrow(() -> new ClassCastException("Cliente não encontrado"));
     }
 
     // =========================
@@ -46,14 +46,14 @@ public class ClienteService {
 
         Cliente cliente = buscarPorId(id);
 
-        cliente.setNome(dados.getNome());
-        cliente.setEmail(dados.getEmail());
-        cliente.setTelefone(dados.getTelefone());
-        cliente.setEndereco(dados.getEndereco());
-        cliente.setCidade(dados.getCidade());
-        cliente.setEstado(dados.getEstado());
-        cliente.setWhatsapp(dados.getWhatsapp());
-        cliente.setObservacoes(dados.getObservacoes());
+        if (dados.getNome() != null) cliente.setNome(dados.getNome());
+        if (dados.getEmail() != null) cliente.setEmail(dados.getEmail());
+        if (dados.getTelefone() != null) cliente.setTelefone(dados.getTelefone());
+        if (dados.getEndereco() != null) cliente.setEndereco(dados.getEndereco());
+        if (dados.getCidade() != null) cliente.setCidade(dados.getCidade());
+        if (dados.getEstado() != null) cliente.setEstado(dados.getEstado());
+        if (dados.getWhatsapp() != null) cliente.setWhatsapp(dados.getWhatsapp());
+        if (dados.getObservacoes() != null) cliente.setObservacoes(dados.getObservacoes());
 
         return clienteRepository.save(cliente);
     }
@@ -87,6 +87,10 @@ public class ClienteService {
         if (cliente.getCnpj() != null &&
                 clienteRepository.existsByCnpj(cliente.getCnpj())) {
             throw new IllegalArgumentException("CNPJ já cadastrado");
+        }
+
+        if (cliente.getEmail() == null || cliente.getEmail().isBlank()) {
+            throw new IllegalArgumentException("Email obrigatório");
         }
     }
 }

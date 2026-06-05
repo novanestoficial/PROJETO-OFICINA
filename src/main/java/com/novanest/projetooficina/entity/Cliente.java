@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import org.hibernate.validator.constraints.br.CNPJ;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -86,4 +87,12 @@ public class Cliente {
     // ESTADO DO CLIENTE(OPCIONAL)
     @Column(length = 2)
     private String estado;
+
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
+    private List<Veiculo> veiculos;
+
+    @PrePersist
+    public void prePersist() {
+        this.dataCadastro = LocalDate.now();
+    }
 }

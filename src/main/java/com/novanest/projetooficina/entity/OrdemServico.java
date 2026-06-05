@@ -22,7 +22,7 @@ public class OrdemServico {
     private UUID id;
 
     @Column(nullable = false, unique = true)
-    private String numeroOS;
+    private String numeroOs;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
